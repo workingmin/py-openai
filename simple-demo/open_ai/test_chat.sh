@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 workdir=$(cd $(dirname $0);pwd)
-messages_file="$workdir/../tests/test_messages.json"
+messages_file="$workdir/../tests/test_chat_messages.json"
 
 echo "test model gpt-3.5-turbo start..."
 python $workdir/chat.py --model='gpt-3.5-turbo' --messages-file="$messages_file"

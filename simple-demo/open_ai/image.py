@@ -3,27 +3,26 @@
 
 import sys
 import os
-import json
 import getopt
 import openai
 
 def usage():
     print("Usage: %s [OPTION]..." % (sys.argv[0]))
-    print(" --help              Display this help and exit")
-    print(" --model             Chat Completion Model")
-    print(" --messages-file     Messages JSON file")
+    print(" --help      Display this help and exit")
+    print(" --prompt    Create new image based on a prompt")
+    print(" --size      Image Size, default \"512x512\"")
 
 if __name__ == '__main__':
-    opts, _ = getopt.getopt(sys.argv[1:], "", ["model=", "messages-file=", "help"])
+    opts, _ = getopt.getopt(sys.argv[1:], "", ["prompt=", "size=", "help"])
 
     for o, a in opts:
         if o in ("--help"):
             usage()
             sys.exit()
-        elif o in ("--model"):
-            model = a
-        elif o in ("--messages-file="):
-            messages_file = a
+        elif o in ("--prompt"):
+            prompt = a
+        elif o in ("--size="):
+            size = a
         else:
             assert False, "unhandled option"
 
@@ -37,11 +36,12 @@ if __name__ == '__main__':
         print("OpenAI API key not specified")
         sys.exit(1)
 
-    with open(messages_file, 'r') as f:
-        messages = json.loads(f.read())
+    if prompt is None:
+        print("prompt is not specified")
+        sys.exit(1)
 
-    response = openai.ChatCompletion.create(
-        model=model,
-        messages=messages
-    )
-    print(f'{response["choices"][0]["message"]["content"]}')
+    if size is None:
+        size = "512x512"
+
+    image_resp = openai.Image.create(prompt=prompt, n=1, size=size)
+    print(image_resp['data'][0]['url'])
