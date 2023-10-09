@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>OpenAI Image generation (DALL·E)</title>
+    </head>
+    <body>
+        <h1>OpenAI Image generation (DALL·E)</h1>
+        
+        prompt:
+        <input type="text" id="prompt" name="Prompt" value="雨中,竹林,小路"/>
+        <br>
+        <input type="submit" onclick="create_image()" value="create"/>
+        <label id="e"></label>
+        
+        <br>
+        <img id="img" width="512" height="512"/></td>
+        </table>
+
+        <script src="http://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            function create_image() {
+                $("#e").text("");
+                $("#img").attr("src", "");
+
+                var prompt = document.getElementById("prompt").value
+                if(prompt === undefined || prompt === null || prompt === "" || prompt.trim().length == 0) {
+                    $("#e").css("color", "red").text("prompt is required");
+                    return
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/image", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                var body = JSON.stringify({
+                    "prompt": prompt
+                });
+                xhr.onload = function() {
+                    var obj = JSON.parse(this.responseText);
+                    var url = obj.url;
+                    if(url != undefined && url != null && url.length > 0) {
+                        $("#img").attr("src", url);
+                    }
+                    else {
+                        $("#e").css("color", "red").text(obj.error);
+                    }
+                }
+                xhr.send(body)
+            };
+        </script>
+    </body>
+</html>
