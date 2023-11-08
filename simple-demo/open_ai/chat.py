@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if messages_file is None:
         print("messages file not specified")
         sys.exit(1)
-    
+
     with open(messages_file, 'r') as f:
         messages = json.loads(f.read())
 
